@@ -1,0 +1,770 @@
+{% extends 'base.html' %}
+
+{% block title %}Device Control - Home Automation System{% endblock %}
+
+{% block container_width %}800px{% endblock %}
+
+{% block content %}
+    <h1>🔧 Device Control</h1>
+    
+    <div class="control-panel">
+        <p class="panel-description">
+            Control your smart home devices from this central dashboard. Toggle switches to turn devices on or off.
+        </p>
+
+        <div class="rooms-grid">
+            <!-- Living Room -->
+            <div class="room-card">
+                <div class="room-header">
+                    <h3>🛋️ Living Room</h3>
+                    <span class="room-status" id="living-room-status">2 devices active</span>
+                </div>
+                <div class="devices-list">
+                    <div class="device-item">
+                        <div class="device-info">
+                            <span class="device-icon">💡</span>
+                            <span class="device-name">Main Light</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="living-main-light" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="device-item">
+                        <div class="device-info">
+                            <span class="device-icon">🛋️</span>
+                            <span class="device-name">Reading Lamp</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="living-reading-lamp" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="device-item">
+                        <div class="device-info">
+                            <span class="device-icon">📺</span>
+                            <span class="device-name">TV Stand Light</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="living-tv-light">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kitchen -->
+            <div class="room-card">
+                <div class="room-header">
+                    <h3>🍳 Kitchen</h3>
+                    <span class="room-status" id="kitchen-status">1 device active</span>
+                </div>
+                <div class="devices-list">
+                    <div class="device-item">
+                        <div class="device-info">
+                            <span class="device-icon">💡</span>
+                            <span class="device-name">Ceiling Light</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="kitchen-ceiling-light" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="device-item">
+                        <div class="device-info">
+                            <span class="device-icon">🔆</span>
+                            <span class="device-name">Under Cabinet</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="kitchen-cabinet-light">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="device-item">
+                        <div class="device-info">
+                            <span class="device-icon">🌊</span>
+                            <span class="device-name">Dishwasher</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="kitchen-dishwasher">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bedroom -->
+            <div class="room-card">
+                <div class="room-header">
+                    <h3>🛏️ Bedroom</h3>
+                    <span class="room-status" id="bedroom-status">0 devices active</span>
+                </div>
+                <div class="devices-list">
+                    <div class="device-item">
+                        <div class="device-info">
+                            <span class="device-icon">💡</span>
+                            <span class="device-name">Main Light</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="bedroom-main-light">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="device-item">
+                        <div class="device-info">
+                            <span class="device-icon">🕯️</span>
+                            <span class="device-name">Bedside Lamps</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="bedroom-bedside-lamps">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="device-item">
+                        <div class="device-info">
+                            <span class="device-icon">🌡️</span>
+                            <span class="device-name">Fan</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="bedroom-fan">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bathroom -->
+            <div class="room-card">
+                <div class="room-header">
+                    <h3>🚿 Bathroom</h3>
+                    <span class="room-status" id="bathroom-status">1 device active</span>
+                </div>
+                <div class="devices-list">
+                    <div class="device-item">
+                        <div class="device-info">
+                            <span class="device-icon">💡</span>
+                            <span class="device-name">Main Light</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="bathroom-main-light" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="device-item">
+                        <div class="device-info">
+                            <span class="device-icon">🪞</span>
+                            <span class="device-name">Mirror Light</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="bathroom-mirror-light">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="device-item">
+                        <div class="device-info">
+                            <span class="device-icon">💨</span>
+                            <span class="device-name">Exhaust Fan</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="bathroom-exhaust-fan">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Master Controls -->
+        <div class="master-controls">
+            <h2>Master Controls</h2>
+            <div class="master-buttons">
+                <button class="master-btn all-on" id="all-lights-on">
+                    <span class="btn-icon">💡</span>
+                    <span class="btn-text">All Lights ON</span>
+                </button>
+                
+                <button class="master-btn all-off" id="all-lights-off">
+                    <span class="btn-icon">🌙</span>
+                    <span class="btn-text">All Lights OFF</span>
+                </button>
+                
+                <button class="master-btn all-off" id="all-devices-off">
+                    <span class="btn-icon">⚡</span>
+                    <span class="btn-text">All Devices OFF</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Status Panel -->
+        <div class="status-panel">
+            <h3>System Status</h3>
+            <div class="status-info">
+                <div class="status-item">
+                    <span class="status-label">Total Devices:</span>
+                    <span class="status-value" id="total-devices">12</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Active Devices:</span>
+                    <span class="status-value" id="active-devices">4</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">Energy Usage:</span>
+                    <span class="status-value" id="energy-usage">240W</span>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_css %}
+    <style>
+        .panel-description {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .room-card {
+            background: linear-gradient(145deg, #f8f9ff, #e8eeff);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .room-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+        }
+
+        .room-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .room-header h3 {
+            color: #333;
+            font-size: 1.4em;
+            margin: 0;
+        }
+
+        .room-status {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .devices-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .device-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            border: 1px solid rgba(102, 126, 234, 0.05);
+        }
+
+        .device-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .device-icon {
+            font-size: 1.4em;
+            width: 30px;
+            text-align: center;
+        }
+
+        .device-name {
+            font-weight: 500;
+            color: #333;
+        }
+
+        /* Toggle Switch Styles */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Master Controls */
+        .master-controls {
+            background: linear-gradient(145deg, #fff3cd, #ffeaa7);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 193, 7, 0.2);
+        }
+
+        .master-controls h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .master-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .master-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 25px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 140px;
+            justify-content: center;
+        }
+
+        .master-btn.all-on {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+        }
+
+        .master-btn.all-off {
+            background: linear-gradient(45deg, #dc3545, #e74c3c);
+            color: white;
+        }
+
+        .master-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-icon {
+            font-size: 1.2em;
+        }
+
+        /* Status Panel */
+        .status-panel {
+            background: linear-gradient(145deg, #d4edda, #c3e6cb);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(40, 167, 69, 0.2);
+        }
+
+        .status-panel h3 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .status-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .status-item {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .status-label {
+            display: block;
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .status-value {
+            display: block;
+            color: #333;
+            font-size: 1.4em;
+            font-weight: bold;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .rooms-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .master-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .status-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script>
+        class DeviceController {
+            constructor() {
+                this.devices = {};
+                this.setupEventListeners();
+                this.loadDeviceStatesFromServer();
+                this.startPeriodicSync(); // Sync with server for voice command updates
+            }
+
+            async loadDeviceStatesFromServer() {
+                try {
+                    const response = await fetch('/api/device-states/');
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.devices = data.device_states;
+                        this.updateUIFromDeviceStates();
+                        this.updateStatus();
+                        console.log('Device states loaded from server:', this.devices);
+                    }
+                } catch (error) {
+                    console.error('Error loading device states:', error);
+                }
+            }
+
+            updateUIFromDeviceStates() {
+                // Update all switches to match backend state
+                Object.keys(this.devices).forEach(deviceId => {
+                    const switchEl = document.getElementById(deviceId);
+                    if (switchEl) {
+                        switchEl.checked = this.devices[deviceId];
+                    }
+                });
+                this.updateRoomStatus();
+            }
+
+            startPeriodicSync() {
+                // Check for voice command updates every 2 seconds
+                setInterval(() => {
+                    this.syncWithServer();
+                }, 2000);
+            }
+
+            async syncWithServer() {
+                try {
+                    const response = await fetch('/api/device-states/');
+                    if (response.ok) {
+                        const data = await response.json();
+                        const newStates = data.device_states;
+                        
+                        // Check if any states changed (voice commands)
+                        let stateChanged = false;
+                        Object.keys(newStates).forEach(deviceId => {
+                            if (this.devices[deviceId] !== newStates[deviceId]) {
+                                stateChanged = true;
+                                console.log(`Voice command detected: ${deviceId} -> ${newStates[deviceId] ? 'ON' : 'OFF'}`);
+                            }
+                        });
+                        
+                        if (stateChanged) {
+                            this.devices = newStates;
+                            this.updateUIFromDeviceStates();
+                            this.updateStatus();
+                            // Let the global notification system handle voice command notifications
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error syncing with server:', error);
+                }
+            }
+
+            showVoiceCommandNotification() {
+                // Create and show a notification for voice command
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(45deg, #667eea, #764ba2);
+                    color: white;
+                    padding: 15px 20px;
+                    border-radius: 10px;
+                    font-weight: 500;
+                    z-index: 1000;
+                    animation: slideIn 0.3s ease;
+                    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+                `;
+                notification.textContent = '🎤 Voice command executed!';
+                document.body.appendChild(notification);
+                
+                // Remove after 3 seconds
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            }
+
+            setupEventListeners() {
+                // Individual device toggles
+                const switches = document.querySelectorAll('input[type="checkbox"]');
+                switches.forEach(switchEl => {
+                    switchEl.addEventListener('change', (e) => {
+                        this.toggleDevice(e.target.id, e.target.checked);
+                    });
+                });
+
+                // Master control buttons
+                document.getElementById('all-lights-on').addEventListener('click', async () => {
+                    await this.toggleAllLights(true);
+                });
+
+                document.getElementById('all-lights-off').addEventListener('click', async () => {
+                    await this.toggleAllLights(false);
+                });
+
+                document.getElementById('all-devices-off').addEventListener('click', async () => {
+                    await this.toggleAllDevices(false);
+                });
+            }
+
+            toggleDevice(deviceId, isOn) {
+                this.devices[deviceId] = isOn;
+                
+                // Send to server (simulate)
+                this.sendDeviceCommand(deviceId, isOn);
+                
+                // Update UI
+                this.updateStatus();
+                this.updateRoomStatus();
+            }
+
+            async toggleAllLights(isOn) {
+                const lightSwitches = document.querySelectorAll('input[id*="light"]');
+                
+                // Send commands to backend for each light
+                const promises = [];
+                lightSwitches.forEach(switchEl => {
+                    switchEl.checked = isOn;
+                    this.devices[switchEl.id] = isOn;
+                    
+                    // Send command to backend
+                    promises.push(this.sendDeviceCommand(switchEl.id, isOn));
+                });
+                
+                // Wait for all commands to complete
+                try {
+                    await Promise.all(promises);
+                    console.log(`All lights turned ${isOn ? 'ON' : 'OFF'}`);
+                } catch (error) {
+                    console.error('Error controlling some lights:', error);
+                }
+                
+                this.updateStatus();
+                this.updateRoomStatus();
+            }
+
+            async toggleAllDevices(isOn) {
+                const allSwitches = document.querySelectorAll('input[type="checkbox"]');
+                
+                // Send commands to backend for each device
+                const promises = [];
+                allSwitches.forEach(switchEl => {
+                    switchEl.checked = isOn;
+                    this.devices[switchEl.id] = isOn;
+                    
+                    // Send command to backend
+                    promises.push(this.sendDeviceCommand(switchEl.id, isOn));
+                });
+                
+                // Wait for all commands to complete
+                try {
+                    await Promise.all(promises);
+                    console.log(`All devices turned ${isOn ? 'ON' : 'OFF'}`);
+                } catch (error) {
+                    console.error('Error controlling some devices:', error);
+                }
+                
+                this.updateStatus();
+                this.updateRoomStatus();
+            }
+
+            updateStatus() {
+                const totalDevices = document.querySelectorAll('input[type="checkbox"]').length;
+                const activeDevices = document.querySelectorAll('input[type="checkbox"]:checked').length;
+                const energyUsage = activeDevices * 60; // Simulate 60W per device
+
+                document.getElementById('total-devices').textContent = totalDevices;
+                document.getElementById('active-devices').textContent = activeDevices;
+                document.getElementById('energy-usage').textContent = energyUsage + 'W';
+            }
+
+            updateRoomStatus() {
+                // Update each room's status
+                const rooms = ['living-room', 'kitchen', 'bedroom', 'bathroom'];
+                
+                rooms.forEach(room => {
+                    const roomDevices = document.querySelectorAll(`input[id^="${room}"]`);
+                    const activeCount = document.querySelectorAll(`input[id^="${room}"]:checked`).length;
+                    const statusEl = document.getElementById(`${room}-status`);
+                    
+                    if (statusEl) {
+                        statusEl.textContent = `${activeCount} device${activeCount !== 1 ? 's' : ''} active`;
+                        
+                        // Update color based on activity
+                        if (activeCount > 0) {
+                            statusEl.style.background = 'rgba(40, 167, 69, 0.2)';
+                            statusEl.style.color = '#28a745';
+                        } else {
+                            statusEl.style.background = 'rgba(102, 126, 234, 0.1)';
+                            statusEl.style.color = '#667eea';
+                        }
+                    }
+                });
+            }
+
+            async sendDeviceCommand(deviceId, isOn) {
+                // Simulate API call to control actual device
+                try {
+                    const response = await fetch('/api/device-control/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': this.getCSRFToken()
+                        },
+                        body: JSON.stringify({
+                            device_id: deviceId,
+                            action: isOn ? 'on' : 'off'
+                        })
+                    });
+
+                    if (response.ok) {
+                        console.log(`Device ${deviceId} turned ${isOn ? 'ON' : 'OFF'}`);
+                        // Use global notification system instead of local one
+                        if (window.showGlobalNotification) {
+                            const deviceName = deviceId.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                            window.showGlobalNotification(`${deviceName} turned ${isOn ? 'ON' : 'OFF'}`);
+                        }
+                    }
+                } catch (error) {
+                    console.log(`Simulated: Device ${deviceId} turned ${isOn ? 'ON' : 'OFF'}`);
+                    // Use global notification system instead of local one
+                    if (window.showGlobalNotification) {
+                        const deviceName = deviceId.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                        window.showGlobalNotification(`${deviceName} turned ${isOn ? 'ON' : 'OFF'}`);
+                    }
+                }
+            }
+
+            showNotification(message) {
+                // Create a simple notification
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: #28a745;
+                    color: white;
+                    padding: 15px 20px;
+                    border-radius: 5px;
+                    z-index: 1000;
+                    animation: slideIn 0.3s ease;
+                `;
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            }
+
+            getCSRFToken() {
+                const cookies = document.cookie.split(';');
+                for (let cookie of cookies) {
+                    const [name, value] = cookie.trim().split('=');
+                    if (name === 'csrftoken') {
+                        return value;
+                    }
+                }
+                return null;
+            }
+        }
+
+        // Initialize device controller when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new DeviceController();
+        });
+
+        // Add slide-in animation for notifications
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); }
+                to { transform: translateX(0); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+{% endblock %}

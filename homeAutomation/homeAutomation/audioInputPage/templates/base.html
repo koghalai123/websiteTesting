@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Home Automation System{% endblock %}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            color: white;
+            font-size: 1.8em;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content Container */
+        .main-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .content-wrapper {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: {% block container_width %}500px{% endblock %};
+            width: 100%;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 30px;
+            padding: 20px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .content-wrapper {
+                padding: 30px 20px;
+                margin: 0 10px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+        }
+
+        {% block extra_css %}{% endblock %}
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="{% url 'home' %}" class="logo">🏠 Home Automation</a>
+            <ul class="nav-links">
+                <li><a href="{% url 'home' %}" {% if request.resolver_match.url_name == 'home' %}class="active"{% endif %}>Home</a></li>
+                <li><a href="{% url 'audioInputPage' %}" {% if request.resolver_match.url_name == 'audioInputPage' %}class="active"{% endif %}>Voice Control</a></li>
+                <li><a href="{% url 'device_control' %}" {% if request.resolver_match.url_name == 'device_control' %}class="active"{% endif %}>Device Control</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <div class="content-wrapper">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 Home Automation System - Powered by Django</p>
+    </footer>
+
+    <!-- Global Notification System -->
+    <script>
+        // Global notification system that works across all pages
+        class GlobalNotificationSystem {
+            constructor() {
+                this.init();
+                this.startDeviceStateMonitoring();
+            }
+
+            init() {
+                // Add CSS for notifications
+                const style = document.createElement('style');
+                style.textContent = `
+                    .global-notification {
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: #28a745;
+                        color: white;
+                        padding: 15px 20px;
+                        border-radius: 8px;
+                        z-index: 10000;
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                        font-size: 14px;
+                        min-width: 250px;
+                        opacity: 0;
+                        transform: translateX(100%);
+                        transition: all 0.3s ease;
+                    }
+                    
+                    .global-notification.show {
+                        opacity: 1;
+                        transform: translateX(0);
+                    }
+                    
+                    .global-notification.voice-command {
+                        background: #007bff;
+                    }
+                    
+                    .global-notification.error {
+                        background: #dc3545;
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+
+            showNotification(message, type = 'success', duration = 3000) {
+                const notification = document.createElement('div');
+                notification.className = `global-notification ${type}`;
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                
+                // Trigger animation
+                setTimeout(() => notification.classList.add('show'), 10);
+                
+                // Remove notification
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => notification.remove(), 300);
+                }, duration);
+            }
+
+            startDeviceStateMonitoring() {
+                // Check for device state changes every 1.5 seconds
+                let lastKnownStates = {};
+                let isInitialLoad = true;
+                
+                setInterval(async () => {
+                    try {
+                        const response = await fetch('/api/device-states/');
+                        if (response.ok) {
+                            const data = await response.json();
+                            const currentStates = data.device_states;
+                            
+                            // Skip notifications on initial load
+                            if (isInitialLoad) {
+                                lastKnownStates = { ...currentStates };
+                                isInitialLoad = false;
+                                return;
+                            }
+                            
+                            // Check for changes
+                            Object.keys(currentStates).forEach(deviceId => {
+                                if (lastKnownStates[deviceId] !== undefined && 
+                                    lastKnownStates[deviceId] !== currentStates[deviceId]) {
+                                    
+                                    // Device state changed - show notification
+                                    const deviceName = this.getDeviceFriendlyName(deviceId);
+                                    const state = currentStates[deviceId] ? 'ON' : 'OFF';
+                                    const message = `${deviceName} turned ${state}`;
+                                    
+                                    // Check if this was likely a voice command
+                                    const wasVoiceCommand = this.wasLikelyVoiceCommand();
+                                    if (wasVoiceCommand) {
+                                        this.showNotification(`🎤 ${message}`, 'voice-command');
+                                    } else {
+                                        this.showNotification(message, 'success');
+                                    }
+                                }
+                            });
+                            
+                            lastKnownStates = { ...currentStates };
+                        }
+                    } catch (error) {
+                        console.error('Error monitoring device states:', error);
+                    }
+                }, 1500);
+            }
+
+            getDeviceFriendlyName(deviceId) {
+                // Convert device ID to friendly name
+                return deviceId
+                    .replace(/-/g, ' ')
+                    .replace(/\b\w/g, l => l.toUpperCase());
+            }
+
+            wasLikelyVoiceCommand() {
+                // Check if we're on the audio page or if there was recent audio activity
+                return window.location.pathname.includes('audio') || 
+                       localStorage.getItem('recentVoiceCommand') === 'true';
+            }
+        }
+
+        // Initialize global notification system
+        window.globalNotifications = new GlobalNotificationSystem();
+
+        // Helper function for other pages to trigger notifications
+        window.showGlobalNotification = (message, type = 'success', duration = 3000) => {
+            window.globalNotifications.showNotification(message, type, duration);
+        };
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

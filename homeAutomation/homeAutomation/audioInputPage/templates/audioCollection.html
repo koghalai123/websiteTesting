@@ -1,0 +1,527 @@
+{% extends 'base.html' %}
+
+{% block title %}Voice Control - Home Automation System{% endblock %}
+
+{% block container_width %}600px{% endblock %}
+
+{% block content %}
+    <h1>🎤 Voice Control</h1>
+    
+    <div class="audio-controls">
+        <button id="micButton" class="mic-button" title="Click to start recording">
+            🎤
+        </button>
+        
+        <div class="timer" id="timer">00:00</div>
+        
+        <div class="wave-container" id="waveContainer">
+            <!-- Audio visualization bars will be generated here -->
+        </div>
+    </div>
+
+    <div id="status" class="status ready">
+        Ready to record - Click the microphone to start
+    </div>
+
+    <div class="audio-preview" id="audioPreview">
+        <audio controls id="audioPlayback"></audio>
+    </div>
+
+    <div class="controls-info">
+        <div class="info-item">
+            <span class="info-icon">🎙️</span>
+            <span>Click microphone to start/stop recording</span>
+        </div>
+        <div class="info-item">
+            <span class="info-icon">⏱️</span>
+            <span>Maximum recording time: 30 seconds</span>
+        </div>
+        <div class="info-item">
+            <span class="info-icon">🔊</span>
+            <span>Audio is automatically sent to server</span>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_css %}
+    <style>
+        .audio-controls {
+            margin: 30px 0;
+        }
+
+        .mic-button {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            font-size: 3em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            margin: 20px auto;
+            display: block;
+            box-shadow: 0 8px 25px rgba(238, 90, 36, 0.3);
+        }
+
+        .mic-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 35px rgba(238, 90, 36, 0.4);
+        }
+
+        .mic-button.recording {
+            background: linear-gradient(45deg, #ff4757, #c44569);
+            animation: pulse 1.5s infinite;
+        }
+
+        .mic-button.processing {
+            background: linear-gradient(45deg, #ffa726, #ff7043);
+            cursor: not-allowed;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 20px rgba(255, 71, 87, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 71, 87, 0);
+            }
+        }
+
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 500;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .status.ready {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.recording {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.processing {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .timer {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ff4757;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .audio-preview {
+            margin: 20px 0;
+            display: none;
+        }
+
+        .audio-preview audio {
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .wave-container {
+            height: 60px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+        }
+
+        .wave-bar {
+            width: 4px;
+            background: linear-gradient(to top, #ff6b6b, #ee5a24);
+            border-radius: 2px;
+            opacity: 0.3;
+            transition: all 0.1s ease;
+        }
+
+        .wave-bar.active {
+            opacity: 1;
+            animation: wave 0.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes wave {
+            from { height: 10px; }
+            to { height: 50px; }
+        }
+
+        .controls-info {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+            color: #4a5568;
+            line-height: 1.6;
+        }
+
+        .info-item {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .info-icon {
+            font-size: 1.2em;
+            color: #667eea;
+        }
+
+        @media (max-width: 480px) {
+            .mic-button {
+                width: 100px;
+                height: 100px;
+                font-size: 2.5em;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script>
+        class AudioRecorder {
+            constructor() {
+                this.isRecording = false;
+                this.mediaRecorder = null;
+                this.audioChunks = [];
+                this.startTime = null;
+                this.timerInterval = null;
+                this.maxRecordingTime = 30000; // 30 seconds
+                
+                this.micButton = document.getElementById('micButton');
+                this.status = document.getElementById('status');
+                this.timer = document.getElementById('timer');
+                this.audioPreview = document.getElementById('audioPreview');
+                this.audioPlayback = document.getElementById('audioPlayback');
+                this.waveContainer = document.getElementById('waveContainer');
+                
+                this.initializeWaveVisualization();
+                this.setupEventListeners();
+                this.checkMicrophonePermission();
+            }
+
+            initializeWaveVisualization() {
+                // Create wave visualization bars
+                for (let i = 0; i < 20; i++) {
+                    const bar = document.createElement('div');
+                    bar.className = 'wave-bar';
+                    bar.style.height = '10px';
+                    this.waveContainer.appendChild(bar);
+                }
+            }
+
+            setupEventListeners() {
+                this.micButton.addEventListener('click', () => {
+                    if (this.isRecording) {
+                        this.stopRecording();
+                    } else {
+                        this.startRecording();
+                    }
+                });
+            }
+
+            async checkMicrophonePermission() {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    stream.getTracks().forEach(track => track.stop());
+                    this.updateStatus('Ready to record - Click the microphone to start', 'ready');
+                } catch (error) {
+                    this.updateStatus('Microphone access denied. Please allow microphone permissions.', 'error');
+                    this.micButton.disabled = true;
+                }
+            }
+
+            async startRecording() {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ 
+                        audio: {
+                            echoCancellation: true,
+                            noiseSuppression: true,
+                            autoGainControl: true
+                        }
+                    });
+
+                    this.mediaRecorder = new MediaRecorder(stream, {
+                        mimeType: 'audio/webm;codecs=opus'
+                    });
+                    
+                    this.audioChunks = [];
+                    this.isRecording = true;
+                    this.startTime = Date.now();
+
+                    this.mediaRecorder.ondataavailable = (event) => {
+                        if (event.data.size > 0) {
+                            this.audioChunks.push(event.data);
+                        }
+                    };
+
+                    this.mediaRecorder.onstop = () => {
+                        this.processRecording();
+                    };
+
+                    this.mediaRecorder.start(100); // Collect data every 100ms
+                    this.startTimer();
+                    this.startWaveAnimation();
+                    this.updateUI('recording');
+                    this.updateStatus('Recording... Click to stop', 'recording');
+
+                    // Auto-stop after max time
+                    setTimeout(() => {
+                        if (this.isRecording) {
+                            this.stopRecording();
+                        }
+                    }, this.maxRecordingTime);
+
+                } catch (error) {
+                    console.error('Error starting recording:', error);
+                    this.updateStatus('Error accessing microphone. Please check permissions.', 'error');
+                }
+            }
+
+            stopRecording() {
+                if (this.mediaRecorder && this.isRecording) {
+                    this.mediaRecorder.stop();
+                    this.mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                    this.isRecording = false;
+                    this.stopTimer();
+                    this.stopWaveAnimation();
+                    this.updateUI('processing');
+                    this.updateStatus('Processing audio...', 'processing');
+                }
+            }
+
+            processRecording() {
+                const audioBlob = new Blob(this.audioChunks, { type: 'audio/webm' });
+                
+                // Create audio URL for preview
+                const audioUrl = URL.createObjectURL(audioBlob);
+                this.audioPlayback.src = audioUrl;
+                this.audioPreview.style.display = 'block';
+
+                // Send to server
+                this.sendAudioToServer(audioBlob);
+            }
+
+            async sendAudioToServer(audioBlob) {
+                const formData = new FormData();
+                formData.append('audio', audioBlob, 'recording.webm');
+                
+                // Add CSRF token for Django
+                const csrfToken = this.getCSRFToken();
+                if (csrfToken) {
+                    formData.append('csrfmiddlewaretoken', csrfToken);
+                }
+
+                try {
+                    const response = await fetch(window.location.href, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-CSRFToken': csrfToken
+                        }
+                    });
+
+                    if (response.ok) {
+                        const result = await response.json();
+                        this.updateStatus('Audio sent successfully! Ready for next recording.', 'ready');
+                        console.log('Server response:', result);
+                        
+                        // Handle voice command processing results
+                        if (result.voice_processing) {
+                            this.handleVoiceProcessingResult(result.voice_processing);
+                        }
+                    } else {
+                        throw new Error('Server responded with an error');
+                    }
+                } catch (error) {
+                    console.error('Error sending audio:', error);
+                    this.updateStatus('Error sending audio to server. Please try again.', 'error');
+                } finally {
+                    this.updateUI('ready');
+                }
+            }
+
+            handleVoiceProcessingResult(voiceResult) {
+                if (!voiceResult || !voiceResult.success) {
+                    console.warn('Voice processing failed:', voiceResult?.message || 'Unknown error');
+                    this.updateStatus('Voice processing failed', 'error');
+                    return;
+                }
+
+                // Set flag for global notification system to know this was a voice command
+                localStorage.setItem('recentVoiceCommand', 'true');
+                setTimeout(() => {
+                    localStorage.setItem('recentVoiceCommand', 'false');
+                }, 5000); // Clear flag after 5 seconds
+
+                // Display the transcription if available
+                if (voiceResult.transcription) {
+                    this.updateStatus(`Voice command: "${voiceResult.transcription}"`, 'ready');
+                }
+
+                // Display AI response if available
+                if (voiceResult.ai_response_text) {
+                    setTimeout(() => {
+                        this.updateStatus(`Assistant: ${voiceResult.ai_response_text}`, 'ready');
+                    }, 2000);
+                    
+                    // If there's TTS audio data, play it
+                    if (voiceResult.audio_data) {
+                        this.playTTSResponse(voiceResult.audio_data);
+                    }
+                }
+
+                // Handle parsed command for device control
+                if (voiceResult.parsed_command) {
+                    this.executeDeviceCommand(voiceResult.parsed_command);
+                }
+            }
+
+            playTTSResponse(audioBase64) {
+                try {
+                    // Convert base64 to blob and play
+                    const audioBytes = atob(audioBase64);
+                    const audioArray = new Uint8Array(audioBytes.length);
+                    for (let i = 0; i < audioBytes.length; i++) {
+                        audioArray[i] = audioBytes.charCodeAt(i);
+                    }
+                    
+                    const audioBlob = new Blob([audioArray], { type: 'audio/wav' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    const audio = new Audio(audioUrl);
+                    
+                    audio.play().catch(error => {
+                        console.error('Error playing TTS audio:', error);
+                    });
+                    
+                    // Clean up the URL after playing
+                    audio.addEventListener('ended', () => {
+                        URL.revokeObjectURL(audioUrl);
+                    });
+                } catch (error) {
+                    console.error('Error processing TTS audio:', error);
+                }
+            }
+
+            executeDeviceCommand(command) {
+                // If we have a valid device command, send it to the device control system
+                if (command && command.device && command.action) {
+                    console.log('Executing device command:', command);
+                    this.updateStatus(`Executing: ${command.action} ${command.device}`, 'ready');
+                    
+                    // Show device command feedback
+                    setTimeout(() => {
+                        this.updateStatus(`✅ Device command executed: ${command.device} ${command.action}`, 'ready');
+                    }, 1000);
+                } else {
+                    console.log('No valid device command to execute');
+                }
+            }
+
+            getCSRFToken() {
+                const cookies = document.cookie.split(';');
+                for (let cookie of cookies) {
+                    const [name, value] = cookie.trim().split('=');
+                    if (name === 'csrftoken') {
+                        return value;
+                    }
+                }
+                return null;
+            }
+
+            startTimer() {
+                this.timerInterval = setInterval(() => {
+                    const elapsed = Date.now() - this.startTime;
+                    const seconds = Math.floor(elapsed / 1000);
+                    const minutes = Math.floor(seconds / 60);
+                    const remainingSeconds = seconds % 60;
+                    
+                    this.timer.textContent = 
+                        `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+                }, 100);
+            }
+
+            stopTimer() {
+                if (this.timerInterval) {
+                    clearInterval(this.timerInterval);
+                    this.timerInterval = null;
+                }
+                this.timer.textContent = '00:00';
+            }
+
+            startWaveAnimation() {
+                const bars = this.waveContainer.querySelectorAll('.wave-bar');
+                this.waveAnimationInterval = setInterval(() => {
+                    bars.forEach(bar => {
+                        if (Math.random() > 0.5) {
+                            bar.classList.add('active');
+                            setTimeout(() => bar.classList.remove('active'), 200);
+                        }
+                    });
+                }, 100);
+            }
+
+            stopWaveAnimation() {
+                if (this.waveAnimationInterval) {
+                    clearInterval(this.waveAnimationInterval);
+                    this.waveAnimationInterval = null;
+                }
+                const bars = this.waveContainer.querySelectorAll('.wave-bar');
+                bars.forEach(bar => bar.classList.remove('active'));
+            }
+
+            updateUI(state) {
+                this.micButton.className = `mic-button ${state}`;
+                
+                switch (state) {
+                    case 'recording':
+                        this.micButton.title = 'Click to stop recording';
+                        break;
+                    case 'processing':
+                        this.micButton.title = 'Processing audio...';
+                        break;
+                    default:
+                        this.micButton.title = 'Click to start recording';
+                }
+            }
+
+            updateStatus(message, type) {
+                this.status.textContent = message;
+                this.status.className = `status ${type}`;
+            }
+        }
+
+        // Initialize the audio recorder when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new AudioRecorder();
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Home Automation System{% endblock %}
+
+{% block content %}
+    <h1>🏠 Welcome to Home Automation</h1>
+    
+    <div class="welcome-section">
+        <p class="welcome-text">
+            Control your smart home with ease. Get started by exploring our features below.
+        </p>
+        
+        <div class="feature-cards">
+            <div class="feature-card">
+                <div class="feature-icon">🎤</div>
+                <h3>Voice Control</h3>
+                <p>Record voice commands to control your smart home devices with natural language processing.</p>
+                <a href="{% url 'audioInputPage' %}" class="feature-button">Start Recording</a>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🔧</div>
+                <h3>Device Control</h3>
+                <p>Manage and monitor all your connected smart home devices from one central dashboard.</p>
+                <a href="{% url 'device_control' %}" class="feature-button">Control Devices</a>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Analytics</h3>
+                <p>View usage statistics and energy consumption data for your smart home devices.</p>
+                <button class="feature-button disabled" disabled>Coming Soon</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="quick-actions">
+        <h2>Quick Actions</h2>
+        <div class="actions-grid">
+            <a href="{% url 'audioInputPage' %}" class="action-item">
+                <span class="action-icon">🎙️</span>
+                <span class="action-text">Voice Command</span>
+            </a>
+            <a href="{% url 'device_control' %}" class="action-item device-control">
+                <span class="action-icon">🔧</span>
+                <span class="action-text">Device Control</span>
+            </a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_css %}
+    <style>
+        .welcome-text {
+            font-size: 1.2em;
+            color: #666;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .feature-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .feature-card {
+            background: linear-gradient(145deg, #f8f9ff, #e8eeff);
+            padding: 30px 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .feature-card p {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .feature-button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .feature-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .feature-button.disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .feature-button.disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .quick-actions {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .quick-actions h2 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+        }
+
+        .actions-grid {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .action-item {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            text-decoration: none;
+            padding: 20px 30px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            min-width: 150px;
+            justify-content: center;
+        }
+
+        .action-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(238, 90, 36, 0.3);
+        }
+
+        .action-item.device-control {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+        }
+
+        .action-item.device-control:hover {
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .action-icon {
+            font-size: 1.5em;
+        }
+
+        .action-text {
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .feature-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .actions-grid {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+{% endblock %}
